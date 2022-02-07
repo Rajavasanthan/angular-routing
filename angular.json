@@ -28,7 +28,9 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "src/assets/sb-admin-2.min.css"
             ],
             "scripts": []
           },
@@ -124,5 +126,8 @@
       }
     }
   },
-  "defaultProject": "angularRouter"
+  "defaultProject": "angularRouter",
+  "cli": {
+    "analytics": "128dbcb3-7484-4794-9ec7-186a3416d9c6"
+  }
 }
