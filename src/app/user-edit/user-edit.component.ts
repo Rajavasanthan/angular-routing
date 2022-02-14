@@ -1,16 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl,FormGroup,Validators } from "@angular/forms";
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../user.service';
+
 @Component({
-  selector: 'app-user-create',
-  templateUrl: './user-create.component.html',
-  styleUrls: ['./user-create.component.css']
+  selector: 'app-user-edit',
+  templateUrl: './user-edit.component.html',
+  styleUrls: ['./user-edit.component.css']
 })
-export class UserCreateComponent implements OnInit {
+export class UserEditComponent implements OnInit {
   userFormData:any;
-  isPosting : boolean = false;
-  constructor(private userService:UserService,private router:Router) { 
+  currentUserId : any;
+  isPosting:boolean = false
+  constructor(private activatedRoute:ActivatedRoute, private userService:UserService,private router:Router) {
+    this.currentUserId = this.activatedRoute.snapshot.params.id;
+
     this.userFormData = new FormGroup({
       'username' : new FormControl("",[Validators.required,Validators.minLength(3),Validators.maxLength(15)]),
       'email' : new FormControl("",[Validators.required,Validators.email]),
@@ -38,20 +42,22 @@ export class UserCreateComponent implements OnInit {
         }),
       ])
     })
+
+    this.userService.userById(this.currentUserId).subscribe((data) => {
+      console.log(data)
+      delete data.id;
+      this.userFormData.setValue(data)
+    })
+    
   }
 
   ngOnInit(): void {
   }
 
-  postFormData(){
+  editFormData(){
     if(this.userFormData.valid){
-      this.isPosting = true;
-      this.userService.createUser(this.userFormData.value).subscribe((data) => {
-        this.isPosting = false;
-          this.router.navigate(["/dashboard/user/list"])
-      },(error) => {
-        this.isPosting = false;
-        alert("Error")
+      this.userService.updateUserById(this.currentUserId,this.userFormData.value).subscribe((data) => {
+        this.router.navigate(['/dashboard/user/list'])
       })
     }
   }
